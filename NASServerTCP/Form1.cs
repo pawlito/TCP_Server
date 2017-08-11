@@ -42,6 +42,8 @@ namespace NASServerTCP
             newlistener.serverstart(progress);
             listeners.Add(newlistener);
             listView1.Items.Add("server started at port 5555");
+            FilesMonitor fm = new FilesMonitor();
+            fm.StartMonitor(progress);
         }
 
         private void Form1_Load(object sender, EventArgs e)
