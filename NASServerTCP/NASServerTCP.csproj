@@ -51,6 +51,7 @@
     <Compile Include="ClsFileInformation.cs" />
     <Compile Include="DBWrapper.cs" />
     <Compile Include="EventLogEntry.cs" />
+    <Compile Include="FileManager.cs" />
     <Compile Include="FilesMonitor.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

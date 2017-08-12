@@ -13,12 +13,14 @@ namespace NASServerTCP
     {
         Thread monitorThread;
         static IProgress<string> progress;
+        public static FileManager fm = new FileManager();
 
         public void StartMonitor(IProgress<string> Progress)
         {
             progress = Progress;
             monitorThread = new Thread(new ThreadStart(WatchChanges));
             monitorThread.Start();
+            monitorThread.IsBackground = true;
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -26,8 +28,7 @@ namespace NASServerTCP
         {
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASServerTCP\NASServerTCP\bin\Debug";
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-           | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            watcher.NotifyFilter =  NotifyFilters.LastWrite| NotifyFilters.FileName | NotifyFilters.DirectoryName;
             // Only watch text files.
             watcher.Filter = "*.txt";
 
@@ -44,9 +45,11 @@ namespace NASServerTCP
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
             // Specify what is done when a file is changed, created, or deleted.
-            Console.WriteLine("File: " + e.FullPath + " " + e.ChangeType);
-            Console.WriteLine("File: " + e.FullPath + " " + e.ChangeType);
-            //progress.Report("File: " + e.FullPath + " " + e.ChangeType);
+            progress.Report("File: " + e.FullPath + " " + e.ChangeType);
+            if (fm.CopyFile(e.Name.ToString()))
+            {
+                progress.Report("File: " + e.FullPath + "copied succesfully");
+            }
 
         }
 
@@ -54,6 +57,10 @@ namespace NASServerTCP
         {
             // Specify what is done when a file is renamed.
             progress.Report($"File: {e.OldFullPath} renamed to {e.FullPath}");
+           if (fm.RenameFile(e.OldName, e.Name))
+            {
+                progress.Report("File: " + e.FullPath + "renamed succesfully");
+            }
         }
     }
 

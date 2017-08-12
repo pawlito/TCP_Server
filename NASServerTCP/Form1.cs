@@ -27,9 +27,9 @@ namespace NASServerTCP
         public Form1()
         {
             InitializeComponent();
-            listView1.View = View.Details;
-            listView1.HeaderStyle = ColumnHeaderStyle.None;
-            listView1.Columns.Add(new ColumnHeader { Width = listView1.ClientSize.Width - SystemInformation.VerticalScrollBarWidth });
+            //listView1.View = View.Details;
+            //listView1.HeaderStyle = ColumnHeaderStyle.None;
+            //listView1.Columns.Add(new ColumnHeader { Width = listView1.ClientSize.Width - SystemInformation.VerticalScrollBarWidth });
             _Form1 = this;
 
         }
