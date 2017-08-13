@@ -27,9 +27,9 @@ namespace NASServerTCP
         public Form1()
         {
             InitializeComponent();
-            listView1.View = View.Details;
-            listView1.HeaderStyle = ColumnHeaderStyle.None;
-            listView1.Columns.Add(new ColumnHeader { Width = listView1.ClientSize.Width - SystemInformation.VerticalScrollBarWidth });
+            //listView1.View = View.Details;
+            //listView1.HeaderStyle = ColumnHeaderStyle.None;
+            //listView1.Columns.Add(new ColumnHeader { Width = listView1.ClientSize.Width - SystemInformation.VerticalScrollBarWidth });
             _Form1 = this;
 
         }
@@ -42,6 +42,8 @@ namespace NASServerTCP
             newlistener.serverstart(progress);
             listeners.Add(newlistener);
             listView1.Items.Add("server started at port 5555");
+            FilesMonitor fm = new FilesMonitor();
+            fm.StartMonitor(progress);
         }
 
         private void Form1_Load(object sender, EventArgs e)
