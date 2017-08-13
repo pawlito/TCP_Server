@@ -28,20 +28,29 @@ namespace NASServerTCP
         }
         private void ListenForClients()
         {
-            
+
             tcplistener = new TcpListener(IPAddress.Loopback, 5555);
             tcplistener.Start();
-            while (true)
+            try
             {
-                //blocks until a client has connected to the server
-                TcpClient client = tcplistener.AcceptTcpClient();
-                // here was first an message that send hello client
-                //
-                ///////////////////////////////////////////////////
-                //create a thread to handle communication
-                //with connected client
-                Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
-                clientThread.Start(client);
+                while (true)
+                {
+                    //blocks until a client has connected to the server
+
+                    TcpClient client = tcplistener.AcceptTcpClient();
+
+                    // here was first an message that send hello client
+                    //
+                    ///////////////////////////////////////////////////
+                    //create a thread to handle communication
+                    //with connected client
+                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClientComm));
+                    clientThread.Start(client);
+                }
+            }
+            catch (SocketException e)
+            {
+                if ((e.SocketErrorCode == SocketError.Interrupted)) { }
             }
         }
         public void StopListener()
@@ -91,21 +100,7 @@ namespace NASServerTCP
             }
 
             fileStream.Dispose();
-            var fileStream2 = new FileStream(fileName, FileMode.OpenOrCreate,
-                FileAccess.Read);
-            str = GetChecksumBuffered(fileStream2);
-            objFileInfo.FileLength = fileLength;
-            objFileInfo.FileName = fileName;
-            objFileInfo.FileHash = str;
-            objFileInfo.FileSize = (Convert.ToSingle(fileLength) / 1024).ToString();
-            fileSize = (Convert.ToSingle(fileLength) / 1024).ToString();
-            using (StreamWriter sw = File.AppendText("test.txt"))
-            {
-                sw.WriteLine(objFileInfo.FileName.ToString() + ";" + objFileInfo.FileHash.ToString());
-            }
-            ////////////////////////////////////////////////////////////////////////////////////////
-            str = "";
-            fileStream2.Close();
+            
             //client.Close();
         
     }
