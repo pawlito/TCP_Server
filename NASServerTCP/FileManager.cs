@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,8 @@ namespace NASServerTCP
 {
     class FileManager
     {
-        private string sourcePath = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASServerTCP\NASServerTCP\bin\Debug";
-        private string destinationPath = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASServerTCP\NASServerTCP\bin\Debug\raid1";
+        private string sourcePath = ConfigurationManager.AppSettings["sourcePath"];
+        private string destinationPath = ConfigurationManager.AppSettings["backupPath"];
         public FileManager()
         {
 

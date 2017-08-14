@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,9 @@ namespace NASServerTCP
 {
     class CompareDirs
     {
-        private string sourcePath = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASServerTCP\NASServerTCP\bin\Debug";
-        private string destinationPath = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASServerTCP\NASServerTCP\bin\Debug\raid1";
-        
+        private string sourcePath = ConfigurationManager.AppSettings["sourcePath"];
+        private string destinationPath = ConfigurationManager.AppSettings["backupPath"];
+
         //A custom file comparer defined below  
         private FileCompare myFileCompare = new FileCompare();
 

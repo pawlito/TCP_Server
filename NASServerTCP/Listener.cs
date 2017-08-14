@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -29,7 +30,7 @@ namespace NASServerTCP
         private void ListenForClients()
         {
 
-            tcplistener = new TcpListener(IPAddress.Loopback, 5555);
+            tcplistener = new TcpListener(IPAddress.Loopback, int.Parse(ConfigurationManager.AppSettings["port"]));
             tcplistener.Start();
             try
             {

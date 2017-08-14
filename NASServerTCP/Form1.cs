@@ -22,7 +22,7 @@ namespace NASServerTCP
         public static TcpListener _server;
         TcpClient client;
         //private Boolean _isRunning;
-        private int PORT = 5555;
+        private int PORT = int.Parse(ConfigurationManager.AppSettings["port"]);
         
         public Form1()
         {

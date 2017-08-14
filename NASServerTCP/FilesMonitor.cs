@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
@@ -27,7 +28,7 @@ namespace NASServerTCP
         private void WatchChanges()
         {
             FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASServerTCP\NASServerTCP\bin\Debug";
+            watcher.Path = ConfigurationManager.AppSettings["sourcePath"];
             watcher.NotifyFilter =  NotifyFilters.LastWrite| NotifyFilters.FileName | NotifyFilters.DirectoryName;
             // Only watch text files.
             watcher.Filter = "*.txt";
