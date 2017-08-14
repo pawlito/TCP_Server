@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -23,7 +24,7 @@ namespace NASServerTCP
         TcpClient client;
         //private Boolean _isRunning;
         private int PORT = int.Parse(ConfigurationManager.AppSettings["port"]);
-        
+        AppEvents ae = new AppEvents("BackupServerLog", "AppLocal");
         public Form1()
         {
             InitializeComponent();
@@ -31,6 +32,8 @@ namespace NASServerTCP
             //listView1.HeaderStyle = ColumnHeaderStyle.None;
             //listView1.Columns.Add(new ColumnHeader { Width = listView1.ClientSize.Width - SystemInformation.VerticalScrollBarWidth });
             _Form1 = this;
+            ae.WriteToLog("App startup", System.Diagnostics.EventLogEntryType.Information,
+                AppEvents.CategoryType.AppStartUp, AppEvents.EventIDType.ExceptionThrown);
 
         }
 
@@ -42,8 +45,13 @@ namespace NASServerTCP
             newlistener.serverstart(progress);
             listeners.Add(newlistener);
             listView1.Items.Add("server started at port 5555");
+            ae.WriteToLog("backup server up", System.Diagnostics.EventLogEntryType.Information,
+               AppEvents.CategoryType.AppStartUp, AppEvents.EventIDType.ExceptionThrown);
+
             FilesMonitor fm = new FilesMonitor();
             fm.StartMonitor(progress);
+            ae.WriteToLog("file system monitoring enabled", System.Diagnostics.EventLogEntryType.Information,
+               AppEvents.CategoryType.None, AppEvents.EventIDType.ExceptionThrown);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -76,6 +84,8 @@ namespace NASServerTCP
                 item.StopListener();
             }
             listView1.Items.Add("Server stopped");
+            ae.WriteToLog("backup server stopped", System.Diagnostics.EventLogEntryType.Information,
+               AppEvents.CategoryType.AppShutDown, AppEvents.EventIDType.ExceptionThrown);
         }
 
         public string GetChecksumBuffered(Stream stream)
