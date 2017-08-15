@@ -12,7 +12,7 @@ namespace NASServerCP
 {
     class DbWrapper
     {
-        const string connString = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASClientTCP\NASServerTCP\bin\filesInfo_server.sqlite";
+        const string connString = @"C:\Users\paweł\Documents\Visual Studio 2015\Projects\NASServerTCP\NASServerTCP\bin\filesInfo_server.sqlite";
         String dbConnection;
 
         public DbWrapper()
