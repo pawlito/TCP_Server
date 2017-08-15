@@ -11,11 +11,13 @@ namespace NASServerTCP
     {
         private string sourcePath = ConfigurationManager.AppSettings["sourcePath"];
         private string destinationPath = ConfigurationManager.AppSettings["backupPath"];
-
         //A custom file comparer defined below  
         private FileCompare myFileCompare = new FileCompare();
 
-        public CompareDirs() { }
+        public CompareDirs()
+        {
+
+        }
 
         public void CompareDirectories()
         {
@@ -29,10 +31,12 @@ namespace NASServerTCP
             if (AreIdentical(list1, list2, myFileCompare))
             {
                 Console.WriteLine("the two folders are the same");
+                //progress.Report("Disks in RAID are the same");
             }
             else
             {
-                Console.WriteLine("The two folders are not the same");
+                //progress.Report("Disks in RAID contains some changes - synchronization required");
+                //TO DO sync between folders
                 ReturnCommonFiles(list1, list2, myFileCompare);
                 ReturnExeptFiles(list1, list2, myFileCompare);
             }

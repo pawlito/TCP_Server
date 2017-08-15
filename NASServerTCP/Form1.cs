@@ -24,7 +24,7 @@ namespace NASServerTCP
         TcpClient client;
         //private Boolean _isRunning;
         private int PORT = int.Parse(ConfigurationManager.AppSettings["port"]);
-        AppEvents ae = new AppEvents("BackupServerLog", "AppLocal");
+        AppEvents ae = new AppEvents("BackupServerLog", "AppLocalServer");
         public Form1()
         {
             InitializeComponent();
