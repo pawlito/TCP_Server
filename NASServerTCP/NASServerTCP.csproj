@@ -75,6 +75,7 @@
     <Compile Include="ClsFileInformation.cs" />
     <Compile Include="CompareDirs.cs" />
     <Compile Include="DBWrapper.cs" />
+    <Compile Include="DisposeObject.cs" />
     <Compile Include="FileCompare.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="FilesMonitor.cs" />

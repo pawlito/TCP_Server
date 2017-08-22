@@ -56,7 +56,7 @@ namespace NASServerTCP
 
             if (queryCommonFiles.Count() > 0)
             {
-                Console.WriteLine("The following files are in both folders:");
+                Console.WriteLine("nastepujace plik są w obu folderach:");
                 foreach (var v in queryCommonFiles)
                 {
                     Console.WriteLine(v.FullName); //shows which items end up in result list  
@@ -64,7 +64,7 @@ namespace NASServerTCP
             }
             else
             {
-                Console.WriteLine("There are no common files in the two folders.");
+                Console.WriteLine("Brak wspólnych plików");
             }
 
             return queryCommonFiles; 
