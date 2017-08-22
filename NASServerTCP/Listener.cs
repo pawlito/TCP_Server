@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NASServerCP;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net;
@@ -18,10 +21,13 @@ namespace NASServerTCP
         IProgress<string> progress;
         private int requestCount;
         private int bytesRead;
+        private DbWrapper db;
+        private FileManager fManager = new FileManager();
 
         public void serverstart(IProgress<string> progress) 
         {
             this.progress = progress;
+            db = new DbWrapper(ConfigurationManager.AppSettings["dbpath"].ToString() + ConfigurationManager.AppSettings["database"].ToString());
             progress.Report("waiting for connections\n");
             listenThread = new Thread(new ThreadStart(ListenForClients));
             listenThread.Start();
@@ -63,8 +69,10 @@ namespace NASServerTCP
         {
             //NetworkStream clientStream = tcpClient.GetStream();
             progress.Report("client connected\n");
+            FileStream fileStream3;
             ClsFileInformation objFileInfo = new ClsFileInformation();
-            string str = "";
+            List<string> Packets = new List<string>();
+            string hash = "";
             // retrieve client from parameter passed to thread
             TcpClient client = (TcpClient)obj;
             // sets two streams
@@ -101,10 +109,26 @@ namespace NASServerTCP
             }
 
             fileStream.Dispose();
-            
+            db.UpInsert("Files", fileName);
+
+            Hashtable row = new Hashtable();
+            row = db.SelectRow(fileName);
+            int ID = int.Parse(row["ID"].ToString());
+            FileSplitter fs = new FileSplitter();
+            Packets = fs.SplitFile(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], fileName), 4);
+            foreach(string packet in Packets)
+            {
+                fileStream3 = new FileStream(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], packet), FileMode.OpenOrCreate,
+                    FileAccess.Read);
+
+                hash = GetChecksumBuffered(fileStream3);
+                fileStream3.Close();
+                db.UpInsertChecksum("checksums", ID, hash,packet);
+                fManager.DeleteFile(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], packet));
+            }
             //client.Close();
-        
-    }
+
+        }
         public byte[] GetBytesFromString(string str)
         {
             byte[] bytes = new byte[str.Length * sizeof(char)];

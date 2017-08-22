@@ -15,7 +15,7 @@ namespace NASServerTCP
         Thread monitorThread;
         static IProgress<string> progress;
         public static FileManager fm = new FileManager();
-        //public static CompareDirs cd = new CompareDirs();
+        public static CompareDirs cd = new CompareDirs();
         public void StartMonitor(IProgress<string> Progress)
         {
             progress = Progress;
@@ -40,7 +40,8 @@ namespace NASServerTCP
 
             // Begin watching.
             watcher.EnableRaisingEvents = true;
-
+           
+            
         }
 
         private static void OnChanged(object source, FileSystemEventArgs e)
@@ -51,7 +52,6 @@ namespace NASServerTCP
             {
                 progress.Report("File: " + e.FullPath + "copied succesfully");
             }
-            //cd.CompareDirectories();
 
         }
 

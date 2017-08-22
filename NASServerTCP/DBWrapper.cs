@@ -54,7 +54,7 @@ namespace NASServerCP
             {
                 con.Open();
 
-                string stm = String.Format("SELECT id,name, checksum, changed, modified FROM Files where name = '{0}';", filename);
+                string stm = String.Format("SELECT id,name FROM Files where name = '{0}';", filename);
 
                 using (SQLiteCommand cmd = new SQLiteCommand(stm, con))
                 {
@@ -66,9 +66,6 @@ namespace NASServerCP
                             {
                                 row["ID"] = Int32.Parse(rdr["id"].ToString());
                                 row["fileName"] = rdr["name"].ToString();
-                                row["checksum"] = rdr["checksum"].ToString();
-                                row["changed"] = rdr["changed"];
-                                row["modified"] = rdr["modified"].ToString();
                             }
                         }
                     }
@@ -77,6 +74,38 @@ namespace NASServerCP
                 con.Close();
             }
             return row;
+        }
+
+        public List<string> SelectAllRows(string filename)
+        {
+            Hashtable row = new Hashtable();
+            List<string> results = new List<string>();
+            using (SQLiteConnection con = new SQLiteConnection(dbConnection))
+            {
+                con.Open();
+
+                string stm = String.Format("SELECT checksums.id, name, file_id, tmpName FROM Files JOIN checksums ON Files.id = checksums.file_id WHERE name = '{0}';", filename);
+
+                using (SQLiteCommand cmd = new SQLiteCommand(stm, con))
+                {
+                    using (SQLiteDataReader rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.HasRows)
+                        {
+                            while (rdr.Read())
+                            {
+                                results.Add(rdr["id"].ToString() + ", " + 
+                                    rdr["name"].ToString() + ", " +
+                                    rdr["file_id"].ToString() + ", " +
+                                    rdr["tmpName"].ToString());
+                            }
+                        }
+                    }
+                }
+
+                con.Close();
+            }
+            return results;
         }
         ///
         ///     Allows the programmer to interact with the database for purposes other than a query.
@@ -94,15 +123,33 @@ namespace NASServerCP
             return rowsUpdated;
         }
 
-        public bool UpInsert(string tabName, string name, string checksum, int changed, string modifiedTime)
+        public bool UpInsert(string tabName, string name)
         {
             Boolean returnCode = true;
             try
             {
                 this.ExecuteNonQuery(
                     String.Format(
-                        "insert or replace into {0}(id, name, checksum, changed, modified) values ((select id from {0} where name = '{1}'), '{1}', '{2}', {3}, '{4}');",
-                        tabName, name, checksum, changed, modifiedTime)
+                        "insert or replace into {0}(id, name) values ((select id from {0} where name = '{1}'), '{1}');",
+                        tabName, name)
+                );
+            }
+            catch
+            {
+                returnCode = false;
+            }
+            return returnCode;
+        }
+
+        public bool UpInsertChecksum(string tabName, int fileID, string checksum, string tmpName)
+        {
+            Boolean returnCode = true;
+            try
+            {
+                this.ExecuteNonQuery(
+                    String.Format(
+                        "insert or replace into {0}(id, file_id, checksum, tmpName) values ((select id from {0} where file_id = {1} AND tmpName = '{3}'), {1}, '{2}', '{3}');",
+                        tabName, fileID, checksum, tmpName)
                 );
             }
             catch

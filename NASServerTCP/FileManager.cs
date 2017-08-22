@@ -84,5 +84,13 @@ namespace NASServerTCP
             return returnCode;
         }
 
+        public Boolean CopyFileList(IEnumerable<FileInfo> list)
+        {
+            Boolean returnCode = true;
+
+            return returnCode;
+
+        }
+
     }
 }

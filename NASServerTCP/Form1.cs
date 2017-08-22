@@ -13,7 +13,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//DODAC KLASE DISPOSE
 namespace NASServerTCP
 {
     public partial class Form1 : Form
@@ -39,6 +38,8 @@ namespace NASServerTCP
 
         private void StartServer(object sender, EventArgs e)
         {
+            var startTimeSpan = TimeSpan.Zero;
+            var periodTimeSpan = TimeSpan.FromDays(1);
             Progress<string> progress = new Progress<string>(text => listView1.Items.Add(text));
             Listener newlistener;
             newlistener = new Listener();
@@ -49,7 +50,13 @@ namespace NASServerTCP
                AppEvents.CategoryType.AppStartUp, AppEvents.EventIDType.ExceptionThrown);
 
             FilesMonitor fm = new FilesMonitor();
+            CompareDirs cdirs = new CompareDirs();
             fm.StartMonitor(progress);
+           /* var timer = new System.Threading.Timer((ee) =>
+            {
+                cdirs.CompareDirectories();
+            }, null, startTimeSpan, periodTimeSpan);*/
+          
             ae.WriteToLog("file system monitoring enabled", System.Diagnostics.EventLogEntryType.Information,
                AppEvents.CategoryType.None, AppEvents.EventIDType.ExceptionThrown);
         }

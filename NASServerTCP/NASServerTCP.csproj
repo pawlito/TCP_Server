@@ -79,6 +79,7 @@
     <Compile Include="FileCompare.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="FilesMonitor.cs" />
+    <Compile Include="FileSplitter.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

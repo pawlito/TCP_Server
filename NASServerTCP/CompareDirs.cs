@@ -13,7 +13,7 @@ namespace NASServerTCP
         private string destinationPath = ConfigurationManager.AppSettings["backupPath"];
         //A custom file comparer defined below  
         private FileCompare myFileCompare = new FileCompare();
-
+        private FileManager fmanager = new FileManager();
         public CompareDirs()
         {
 
@@ -79,7 +79,7 @@ namespace NASServerTCP
             Console.WriteLine("The following files are in list1 but not list2:");
             foreach (var v in queryList1Only)
             {
-                Console.WriteLine(v.FullName);
+                fmanager.CopyFile(v.Name);
             }
 
             return queryList1Only;
