@@ -76,6 +76,7 @@
     <Compile Include="CompareDirs.cs" />
     <Compile Include="DBWrapper.cs" />
     <Compile Include="DisposeObject.cs" />
+    <Compile Include="DSC.cs" />
     <Compile Include="FileCompare.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="FilesMonitor.cs" />
@@ -116,7 +117,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

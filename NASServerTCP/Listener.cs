@@ -26,7 +26,10 @@ namespace NASServerTCP
 
         public void serverstart(IProgress<string> progress) 
         {
+            FileSplitter fs2 = new FileSplitter();
             this.progress = progress;
+            DSC obj = new DSC();
+            obj.SearchDSC();
             db = new DbWrapper(ConfigurationManager.AppSettings["dbpath"].ToString() + ConfigurationManager.AppSettings["database"].ToString());
             progress.Report("waiting for connections\n");
             listenThread = new Thread(new ThreadStart(ListenForClients));
@@ -71,7 +74,7 @@ namespace NASServerTCP
             progress.Report("client connected\n");
             FileStream fileStream3;
             ClsFileInformation objFileInfo = new ClsFileInformation();
-            List<string> Packets = new List<string>();
+            Dictionary<string, byte[]> Packets = new Dictionary<string, byte[]>();
             string hash = "";
             // retrieve client from parameter passed to thread
             TcpClient client = (TcpClient)obj;
@@ -97,7 +100,7 @@ namespace NASServerTCP
                 fileName = ASCIIEncoding.ASCII.GetString(fileNameBytes);
             }
             Thread.Sleep(1000);
-            FileStream fileStream = File.Open(fileName, FileMode.Create, FileAccess.ReadWrite);
+            FileStream fileStream = File.Open(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], fileName), FileMode.Create, FileAccess.ReadWrite);
             int read;
             int totalRead = 0;
             byte[] buffer = new byte[32 * 1024]; // 32k chunks
@@ -116,15 +119,11 @@ namespace NASServerTCP
             int ID = int.Parse(row["ID"].ToString());
             FileSplitter fs = new FileSplitter();
             Packets = fs.SplitFile(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], fileName), 4);
-            foreach(string packet in Packets)
+            foreach (KeyValuePair<string, byte[]> item in Packets)
             {
-                fileStream3 = new FileStream(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], packet), FileMode.OpenOrCreate,
-                    FileAccess.Read);
-
-                hash = GetChecksumBuffered(fileStream3);
-                fileStream3.Close();
-                db.UpInsertChecksum("checksums", ID, hash,packet);
-                fManager.DeleteFile(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], packet));
+                hash = GetChecksumBufferedFromByteArray(item.Value);
+                db.UpInsertChecksum("checksums", ID, hash,item.Key);
+                //fManager.DeleteFile(Path.Combine(ConfigurationManager.AppSettings["sourcePath"], packet));
             }
             //client.Close();
 
@@ -154,6 +153,14 @@ namespace NASServerTCP
                 byte[] checksum = sha.ComputeHash(bufferedStream);
                 return BitConverter.ToString(checksum).Replace("-", String.Empty);
             }
+        }
+
+        public string GetChecksumBufferedFromByteArray(byte[] item)
+        {
+                var sha = new SHA256Managed();
+                byte[] checksum = sha.ComputeHash(item);
+                return BitConverter.ToString(checksum).Replace("-", String.Empty);
+            
         }
     }
 

@@ -84,7 +84,7 @@ namespace NASServerCP
             {
                 con.Open();
 
-                string stm = String.Format("SELECT checksums.id, name, file_id, tmpName FROM Files JOIN checksums ON Files.id = checksums.file_id WHERE name = '{0}';", filename);
+                string stm = String.Format("SELECT checksums.id, name, file_id, tmpName, checksum FROM Files JOIN checksums ON Files.id = checksums.file_id WHERE name = '{0}';", filename);
 
                 using (SQLiteCommand cmd = new SQLiteCommand(stm, con))
                 {
@@ -94,10 +94,11 @@ namespace NASServerCP
                         {
                             while (rdr.Read())
                             {
-                                results.Add(rdr["id"].ToString() + ", " + 
-                                    rdr["name"].ToString() + ", " +
-                                    rdr["file_id"].ToString() + ", " +
-                                    rdr["tmpName"].ToString());
+                                results.Add(rdr["id"].ToString() + "," + 
+                                    rdr["name"].ToString() + "," +
+                                    rdr["file_id"].ToString() + "," +
+                                    rdr["tmpName"].ToString() + "," +
+                                    rdr["checksum"].ToString());
                             }
                         }
                     }

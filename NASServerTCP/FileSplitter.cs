@@ -15,7 +15,7 @@ namespace NASServerTCP
         public FileSplitter()
         { }
 
-        public List<string> SplitFile(string SourceFile, int nNoofFiles)
+        public List<string> SplitFile_deprecated(string SourceFile, int nNoofFiles)
         {
             List<string> Packets = new List<string>();
             
@@ -58,6 +58,42 @@ namespace NASServerTCP
 
             return Packets;
         }
+
+        public Dictionary<string, byte[]> SplitFile(string SourceFile, int nNoofFiles)
+        {
+            Dictionary<string, byte[]> Packets = new Dictionary<string, byte[]>();
+
+            bool Split = false;
+            try
+            {
+                FileStream fs = new FileStream(SourceFile, FileMode.Open, FileAccess.Read);
+                int SizeofEachFile = (int)Math.Ceiling((double)fs.Length / nNoofFiles);
+
+                for (int i = 0; i < nNoofFiles; i++)
+                {
+                    string baseFileName = Path.GetFileNameWithoutExtension(SourceFile);
+                    string Extension = Path.GetExtension(SourceFile);
+
+                    int bytesRead = 0;
+                    byte[] buffer = new byte[SizeofEachFile];
+
+                    if ((bytesRead = fs.Read(buffer, 0, SizeofEachFile)) > 0)
+                    {
+                        string name = baseFileName + "." + i.ToString().PadLeft(3, Convert.ToChar("0")) + Extension.ToString();
+                        Packets.Add(name,buffer);
+                    }
+
+                }
+                fs.Close();
+            }
+            catch (Exception Ex)
+            {
+                throw new ArgumentException(Ex.Message);
+            }
+
+            return Packets;
+        }
+
         public string GetChecksumBuffered(Stream stream)
         {
             using (var bufferedStream = new BufferedStream(stream, 1024 * 32))
