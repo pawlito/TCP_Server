@@ -40,12 +40,15 @@ namespace NASServerTCP
         {
             var startTimeSpan = TimeSpan.Zero;
             var periodTimeSpan = TimeSpan.FromDays(1);
-            Progress<string> progress = new Progress<string>(text => listView1.Items.Add(text));
+            Progress<string> progress = new Progress<string>(text => listView1.Items.Add(text)); //replace listView
+            Progress<string> progressDSC = new Progress<string>(text => listView1.Items.Add(text)); //replace listView
             Listener newlistener;
             newlistener = new Listener();
+            DSC DSCManager = new DSC();
             newlistener.serverstart(progress);
             listeners.Add(newlistener);
             listView1.Items.Add("server started at port 5555");
+            DSCManager.StartDSC(progressDSC);
             ae.WriteToLog("backup server up", System.Diagnostics.EventLogEntryType.Information,
                AppEvents.CategoryType.AppStartUp, AppEvents.EventIDType.ExceptionThrown);
 

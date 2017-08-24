@@ -29,7 +29,7 @@ namespace NASServerTCP
             FileSplitter fs2 = new FileSplitter();
             this.progress = progress;
             DSC obj = new DSC();
-            obj.SearchDSC();
+            //obj.SearchDSC();
             db = new DbWrapper(ConfigurationManager.AppSettings["dbpath"].ToString() + ConfigurationManager.AppSettings["database"].ToString());
             progress.Report("waiting for connections\n");
             listenThread = new Thread(new ThreadStart(ListenForClients));
